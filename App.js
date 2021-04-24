@@ -1,21 +1,38 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import "react-native-gesture-handler";
+
+import { enableScreens } from "react-native-screens";
+import React, { useState } from "react";
+import AppLoading from "expo-app-loading";
+import * as Font from "expo-font";
+import CricketNavigation from "./app/navigations/CricketNavigation";
+import { Provider } from "react-redux";
+
+import store from "./app/features/store";
+
+enableScreens();
+
+const fetchFonts = () =>
+  Font.loadAsync({
+    roboto: require("./app/fonts/RobotoCondensed-Regular.ttf"),
+    "roboto-bold": require("./app/fonts/RobotoCondensed-Bold.ttf"),
+  });
 
 export default function App() {
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  if (!fontsLoaded) {
+    return (
+      <AppLoading
+        startAsync={fetchFonts}
+        onError={(error) => console.log(error)}
+        onFinish={() => setFontsLoaded(true)}
+      />
+    );
+  }
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <Provider store={store}>
+      <CricketNavigation />
+    </Provider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
